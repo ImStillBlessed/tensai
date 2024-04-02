@@ -27,11 +27,13 @@ model Account {
   expiresAt          Int?
   tokenType          String?
   scope              String?
+  user               User    @relation(fields: [userId], references: [id])
   idToken            String?
   sessionState       String?
 
   @@unique([provider, providerAccountId])
   @@index([userId], name: "userId")
+  @@map("accounts")
 }
  
 model Session {
@@ -51,5 +53,6 @@ model User {
   emailVerified   DateTime?   @map("verifiedAt")
   image           String?
   sessions        Session[]
+  accounts        Account[]
   @@map("users")
 }
