@@ -7,14 +7,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
  
-model VerificationToken {
-  id              String      @id @default(auto()) @map("_id") @db.ObjectId
-  identifier      String
-  token           String      @unique
-  expires         DateTime    @map("expiresAt")
-  @@unique([identifier, token])
-  @@map("verification_tokens")
-}
+// model VerificationToken {
+//   id              String      @id @default(auto()) @map("_id") @db.ObjectId
+//   identifier      String
+//   token           String      @unique
+//   expires         DateTime    @map("expiresAt")
+//   @@unique([identifier, token])
+//   @@map("verification_tokens")
+// }
 
 model Account {
   id                 String @id @default(auto()) @map("_id") @db.ObjectId
