@@ -11,6 +11,7 @@ const SignInButton = ({ text }: Props) => {
   return (
     <Button
       onClick={() => {
+        console.log("sign in");
         signIn("google").catch(console.error);
       }}
     >
