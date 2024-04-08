@@ -1,58 +1,88 @@
 generator client {
-  provider        = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "mongodb"
-  url      = env("DATABASE_URL")
-}
-
-model VerificationToken {
-  id              String      @id @default(auto()) @map("_id") @db.ObjectId
-  identifier      String
-  token           String      @unique
-  expires         DateTime    @map("expiresAt")
-  @@unique([identifier, token])
-  // @@map("verification_tokens")
-}
-
-model Account {
-  id                 String @id @default(auto()) @map("_id") @db.ObjectId
-  userId             String @db.ObjectId
-  type               String
-  provider           String
-  providerAccountId  String
-  refreshToken       String?
-  accessToken        String?
-  expiresAt          Int?
-  tokenType          String?
-  scope              String?
-  user               User    @relation(fields: [userId], references: [id])
-  idToken            String?
-  sessionState       String?
-
-  @@unique([provider, providerAccountId])
-  @@index([userId], name: "userId")
-  // @@map("accounts")
-}
- 
-model Session {
-  id              String      @id @default(auto()) @map("_id") @db.ObjectId
-  sessionToken    String      @unique
-  userId          String      @db.ObjectId
-  expires         DateTime    @map("expiresAt")
-  user            User        @relation(fields: [userId], references: [id])
-  // @@map("sessions")
+  provider     = "mongodb"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
 model User {
-  id              String      @id @default(auto()) @map("_id") @db.ObjectId
-  name            String?
-  email           String      @unique
-  createdAt       DateTime    @default(now())
-  emailVerified   DateTime?   @map("verifiedAt")
-  image           String?
-  sessions        Session[]
-  accounts        Account[]
-  // @@map("users")
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  name          String?
+  email         String    @unique
+  created_at    DateTime  @default(now())
+  emailVerified DateTime? @map("verified_at")
+  image         String?
+  Sessions      Session[]
+  Accounts      Account[]
+  games         Game[]
+
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  user_id           String  @db.ObjectId
+  type              String
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  refresh_token     String? @db.String
+  access_token      String? @db.String
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.String
+  session_state     String?
+  user              User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  session_token String   @unique
+  user_id       String   @db.ObjectId
+  expires       DateTime @map("expires_at")
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+enum GameType {
+  mcq
+  openEnded
+}
+
+model Game {
+  id           String     @id @default(auto()) @map("_id") @db.ObjectId
+  user_id      String     @db.ObjectId
+  time_started DateTime
+  topic        String
+  time_ended   DateTime?
+  game_type    GameType
+  user         User       @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  questions    Question[]
+
+  @@index([user_id], name: "user_id")
+  @@map("games")
+}
+
+model Question {
+  id                 String   @id @default(auto()) @map("_id") @db.ObjectId
+  game_id            String   @db.ObjectId
+  question           String
+  answer             String
+  options            Json?
+  is_correct         Boolean?
+  percentage_correct Float?
+  question_type      GameType
+  user_answer        String?
+  game               Game     @relation(fields: [game_id], references: [id], onDelete: Cascade)
+
+  @@index([game_id], name: "game_id")
+  @@map("questions")
 }
