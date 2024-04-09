@@ -14,7 +14,9 @@ const RecentActivities = (props: Props) => {
     <Card className="col-span-4 lg:col-span-3">
       <CardHeader>
         <CardTitle className="text-2xl font-bold">Recent Activity</CardTitle>
-        <CardDescription>You have played a total of 7 games</CardDescription>
+        <CardDescription>
+          You have played a total of 7 games #hardcoded
+        </CardDescription>
       </CardHeader>
       <CardContent className=" max-h-[580px] overflow-scroll">
         histories

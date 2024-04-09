@@ -1,3 +1,4 @@
+"use client";
 import D3Wordcloud from "react-d3-cloud";
 import React from "react";
 import { useTheme } from "next-themes";
@@ -10,12 +11,12 @@ const data = [
     value: 3,
   },
   {
-    text: "molecular chamistry",
+    text: "molecular chemistry",
     value: 3,
   },
   {
-    text: "dopplers effect of soubd",
-    value: 3,
+    text: "dopplers effect of sound",
+    value: 5,
   },
   {
     text: "data structures",
