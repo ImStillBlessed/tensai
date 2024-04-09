@@ -46,15 +46,14 @@ model Session {
   session_token String   @unique
   user_id       String   @db.ObjectId
   expires       DateTime @map("expires_at")
-
-  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user          User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@map("sessions")
 }
 
 enum GameType {
-  mcq
-  openEnded
+  multiple_choice
+  open_ended
 }
 
 model Game {
@@ -63,7 +62,7 @@ model Game {
   time_started DateTime
   topic        String
   time_ended   DateTime?
-  game_type    GameType
+  game_type    String
   user         User       @relation(fields: [user_id], references: [id], onDelete: Cascade)
   questions    Question[]
 
