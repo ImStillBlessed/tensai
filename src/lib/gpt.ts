@@ -6,6 +6,7 @@
 import { OpenAI } from "openai";
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
+  organization: process.env.OPENAI_ORG,
 });
 
 interface OutputFormat {
@@ -55,20 +56,48 @@ export async function strict_output(
     }
 
     // Use OpenAI to get a response
-    const response = await openai.chat.completions.create({
-      //   temperature: temperature,
-      model: model,
-      messages: [
+    let res: string;
+    try {
+      const response = await openai.chat.completions.create({
+        //   temperature: temperature,
+        model: model,
+        messages: [
+          {
+            role: "system",
+            content: system_prompt + output_format_prompt + error_msg,
+          },
+          { role: "user", content: user_prompt.toString() },
+        ],
+        response_format: { type: "json_object" },
+      });
+      res = response.choices[0].message?.content?.replace(/'/g, '"') ?? "";
+    } catch {
+      console.log("response failed");
+      let questions: object = [
         {
-          role: "system",
-          content: system_prompt + output_format_prompt + error_msg,
+          question: "this is a test question answer is correct",
+          answer: "correct",
+          option1: "wrong1",
+          option2: "wrong2",
+          option3: "wrong3",
         },
-        { role: "user", content: user_prompt.toString() },
-      ],
-    });
-
-    let res: string =
-      response.choices[0].message?.content?.replace(/'/g, '"') ?? "";
+        {
+          question: "this is a test question answer is also correct",
+          answer: "also correct",
+          option1: "wrong1",
+          option2: "wrong2",
+          option3: "wrong3",
+        },
+        {
+          question: "this is a test question answer is wrong",
+          answer: "wrong",
+          option1: "wrong1",
+          option2: "wrong2",
+          option3: "wrong3",
+        },
+      ];
+      return questions;
+    }
 
     // ensure that we don't replace away apostrophes in text
     res = res.replace(/(\w)"(\w)/g, "$1'$2");

@@ -3,6 +3,7 @@ import Link from "next/link";
 import React from "react";
 import SignInButton from "./SignInButton";
 import { ThemeToggle } from "./ThemeToggle";
+import UserAccNav from "./UserAccNav";
 
 type Props = {};
 
@@ -21,7 +22,7 @@ const Navbar = async (props: Props) => {
           <ThemeToggle className="mr-3" />
           <div className="flex items-center">
             {session?.user ? (
-              <h1>Welcome {session.user.name}</h1>
+              <UserAccNav user={session?.user} />
             ) : (
               <SignInButton text="Sign in" />
             )}

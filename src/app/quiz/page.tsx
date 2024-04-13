@@ -11,10 +11,10 @@ export const metadata = {
 
 const QuizPage = async (props: Props) => {
   // redirect if not signed in
-  // const session = await getAuthSession();
-  // if (!session?.user) {
-  //     return redirect('/');
-  // }
+  const session = await getAuthSession();
+  if (!session?.user) {
+    return redirect("/");
+  }
   return <QuizCreation />;
 };
 

@@ -24,7 +24,7 @@ model User {
 
 model Account {
   id                String  @id @default(auto()) @map("_id") @db.ObjectId
-  user_id           String  @db.ObjectId
+  userId            String  @db.ObjectId
   type              String
   provider          String
   providerAccountId String  @map("provider_account_id")
@@ -35,19 +35,21 @@ model Account {
   scope             String?
   id_token          String? @db.String
   session_state     String?
-  user              User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id])
 
   @@unique([provider, providerAccountId])
+  @@index([userId], name: "userId")
   @@map("accounts")
 }
 
 model Session {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
   session_token String   @unique
-  user_id       String   @db.ObjectId
+  userId        String   @db.ObjectId
   expires       DateTime @map("expires_at")
-  user          User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user          User     @relation(fields: [userId], references: [id])
 
+  @@index([userId], name: "userId")
   @@map("sessions")
 }
 
@@ -63,7 +65,7 @@ model Game {
   topic        String
   time_ended   DateTime?
   game_type    String
-  user         User       @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user         User       @relation(fields: [user_id], references: [id])
   questions    Question[]
 
   @@index([user_id], name: "user_id")
@@ -78,7 +80,7 @@ model Question {
   options            Json?
   is_correct         Boolean?
   percentage_correct Float?
-  question_type      GameType
+  question_type      String
   user_answer        String?
   game               Game     @relation(fields: [game_id], references: [id], onDelete: Cascade)
 
