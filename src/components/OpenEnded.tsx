@@ -12,6 +12,7 @@ import axios from "axios";
 import { useMutation } from "react-query";
 import { z } from "zod";
 import BlankAnswer from "./BlankAnswer";
+import { prisma } from "@/lib/db";
 
 type Props = {
   game: Game & {
@@ -76,6 +77,13 @@ const OpenEnded = ({ game }: Props) => {
   }, [handleNext]);
 
   if (isFinished) {
+    const updateTime = async () => {
+      await prisma.game.update({
+        where: { id: game.id },
+        data: { time_ended: now },
+      });
+    };
+    updateTime();
     return (
       <div className="absolute flex flex-col justify-center top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
         <div className="px-4 mt-2 font-semibold text-white bg-green-500 rounded-md whitespace-nowrap">

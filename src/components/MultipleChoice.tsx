@@ -11,6 +11,7 @@ import { z } from "zod";
 import { checkAnswerSchema } from "@/schemas/form/quiz";
 import Link from "next/link";
 import { cn, formatTimeDelta } from "@/lib/utils";
+import { prisma } from "@/lib/db";
 
 type Props = {
   game: Game & {
@@ -85,7 +86,16 @@ const MultipleChoice = ({ game }: Props) => {
     return JSON.parse(currentQuestion.options as string) as string[];
   }, [currentQuestion]);
 
+  // fix the update time_ended function
+
   if (isFinished) {
+    const updateTime = async () => {
+      await prisma.game.update({
+        where: { id: game.id },
+        data: { time_ended: now },
+      });
+    };
+    updateTime();
     return (
       <div className="absolute flex flex-col justify-center top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
         <div className="px-4 mt-2 font-semibold text-white bg-green-500 rounded-md whitespace-nowrap">

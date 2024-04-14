@@ -23,6 +23,7 @@ export async function POST(req: Request, res: Response) {
       data: {
         game_type: type,
         time_started: new Date(),
+        time_ended: new Date(),
         user_id: session.user.id,
         topic: topic,
       },
