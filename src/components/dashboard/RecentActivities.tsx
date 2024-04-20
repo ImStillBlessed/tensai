@@ -6,20 +6,31 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
+import HistoryComponent from "../HistoryComponent";
+import { getAuthSession } from "@/lib/nextauth";
+import { redirect } from "next/navigation";
+import { prisma } from "@/lib/db";
 
 type Props = {};
 
-const RecentActivities = (props: Props) => {
+const RecentActivities = async (props: Props) => {
+  const session = await getAuthSession();
+  if (!session) {
+    return redirect("/");
+  }
+  const games_count = await prisma.game.count({
+    where: { user_id: session.user.id },
+  });
   return (
     <Card className="col-span-4 lg:col-span-3">
       <CardHeader>
         <CardTitle className="text-2xl font-bold">Recent Activity</CardTitle>
         <CardDescription>
-          You have played a total of 7 games #hardcoded
+          You have played a total of {games_count} game{games_count > 1 && "s"}
         </CardDescription>
       </CardHeader>
       <CardContent className=" max-h-[580px] overflow-scroll">
-        histories
+        <HistoryComponent limit={10} user_id={session.user.id} />
       </CardContent>
     </Card>
   );

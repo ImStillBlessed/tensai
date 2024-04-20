@@ -27,13 +27,18 @@ import { Separator } from "./ui/separator";
 import { useMutation } from "react-query";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import LoadingQuestions from "./LoadingQuestions";
 
-type Props = {};
+type Props = {
+  topicParam: string;
+};
 
 type Input = z.infer<typeof quizCreationSchema>;
 
-const QuizCreation = (props: Props) => {
+const QuizCreation = ({ topicParam }: Props) => {
   const router = useRouter();
+  const [finished, setFinished] = React.useState(false);
+  const [showLoader, setShowLoader] = React.useState(false);
   const { mutate: getQuestions, isLoading } = useMutation({
     mutationFn: async ({ amount, topic, type }: Input) => {
       const response = await axios.post("/api/game", {
@@ -49,12 +54,13 @@ const QuizCreation = (props: Props) => {
     resolver: zodResolver(quizCreationSchema),
     defaultValues: {
       amount: 3,
-      topic: "",
+      topic: topicParam,
       type: "multiple_choice",
     },
   });
 
   function onSubmit(input: Input) {
+    setShowLoader(true);
     getQuestions(
       {
         amount: input.amount,
@@ -63,17 +69,26 @@ const QuizCreation = (props: Props) => {
       },
       {
         onSuccess: ({ game_id }) => {
-          if (form.getValues("type") === "multiple_choice") {
-            router.push(`/play/multiple_choice/${game_id}`);
-          } else {
-            router.push(`/play/open_ended/${game_id}`);
-          }
+          setFinished(true);
+          setTimeout(() => {
+            if (form.getValues("type") === "multiple_choice") {
+              router.push(`/play/multiple_choice/${game_id}`);
+            } else {
+              router.push(`/play/open_ended/${game_id}`);
+            }
+          }, 1000);
+        },
+        onError: () => {
+          setShowLoader(false);
         },
       }
     );
   }
 
   form.watch();
+  if (showLoader) {
+    return <LoadingQuestions finsihed={finished} />;
+  }
 
   return (
     <div className="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2">

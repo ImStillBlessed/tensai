@@ -53,6 +53,14 @@ model Session {
   @@map("sessions")
 }
 
+model TopicCount {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  topic String @unique
+  count Int
+
+  @@map("topic_counts")
+}
+
 enum GameType {
   multiple_choice
   open_ended
