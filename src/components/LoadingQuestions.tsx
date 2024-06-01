@@ -48,6 +48,14 @@ const LoadingQuestions = ({ finsihed }: Props) => {
         alt="Loading animation"
         width={400}
         height={400}
+        className="block dark:hidden"
+      />
+      <Image
+        src="/loading-dark.gif"
+        alt="Loading animation"
+        width={400}
+        height={400}
+        className="hidden dark:block"
       />
       <Progress value={progress} className="w-full mt-4" />
       <h1 className="mt-2 text-xl">{loadingText}</h1>

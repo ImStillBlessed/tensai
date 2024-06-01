@@ -1,6 +1,6 @@
-import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { Award, Trophy } from "lucide-react";
+import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { Award, Trophy } from 'lucide-react';
 
 type Props = {
   accuracy: number;
@@ -18,7 +18,7 @@ const ResultCard = ({ accuracy }: Props) => {
           <>
             <Trophy className="mr-4" stroke="gold" size={50} />
             <div className="flex flex-col text-2xl font-semibold text-yellow-400">
-              <span>Impressive</span>
+              <span className="text-center">Impressive</span>
               <span className="text-sm text-center text-black opacity-50">
                 You scored {accuracy}% in the quiz
               </span>

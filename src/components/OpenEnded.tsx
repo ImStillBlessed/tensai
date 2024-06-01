@@ -1,22 +1,22 @@
-"use client";
-import { Game, Question } from "@prisma/client";
-import { BarChart, ChevronRight, Loader2, Timer } from "lucide-react";
-import React from "react";
-import { Card, CardDescription, CardHeader, CardTitle } from "./ui/card";
-import { cn, formatTimeDelta } from "@/lib/utils";
-import { differenceInSeconds } from "date-fns";
-import { Button, buttonVariants } from "./ui/button";
-import Link from "next/link";
-import { checkAnswerSchema } from "@/schemas/form/quiz";
-import axios from "axios";
-import { useMutation } from "react-query";
-import { z } from "zod";
-import BlankAnswer from "./BlankAnswer";
-import { prisma } from "@/lib/db";
+'use client';
+import { Game, Question } from '@prisma/client';
+import { BarChart, ChevronRight, Loader2, Timer } from 'lucide-react';
+import React from 'react';
+import { Card, CardDescription, CardHeader, CardTitle } from './ui/card';
+import { cn, formatTimeDelta } from '@/lib/utils';
+import { differenceInSeconds } from 'date-fns';
+import { Button, buttonVariants } from './ui/button';
+import Link from 'next/link';
+import { checkAnswerSchema } from '@/schemas/form/quiz';
+import axios from 'axios';
+import { useMutation } from 'react-query';
+import { z } from 'zod';
+import BlankAnswer from './BlankAnswer';
+import { prisma } from '@/lib/db';
 
 type Props = {
   game: Game & {
-    questions: Pick<Question, "id" | "question" | "answer">[];
+    questions: Pick<Question, 'id' | 'question' | 'answer'>[];
   };
 };
 
@@ -44,9 +44,9 @@ const OpenEnded = ({ game }: Props) => {
     mutationFn: async () => {
       const payload: z.infer<typeof checkAnswerSchema> = {
         questionId: currentQuestion.id,
-        userAnswer: "",
+        userAnswer: '',
       };
-      const response = await axios.post("/api/checkAnswer", payload);
+      const response = await axios.post('/api/checkAnswer', payload);
       return response.data;
     },
   });
@@ -66,13 +66,13 @@ const OpenEnded = ({ game }: Props) => {
 
   React.useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.code === "Enter") {
+      if (event.code === 'Enter') {
         handleNext();
       }
     };
-    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener('keydown', handleKeyDown);
     return () => {
-      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener('keydown', handleKeyDown);
     };
   }, [handleNext]);
 
@@ -87,12 +87,12 @@ const OpenEnded = ({ game }: Props) => {
     return (
       <div className="absolute flex flex-col justify-center top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
         <div className="px-4 mt-2 font-semibold text-white bg-green-500 rounded-md whitespace-nowrap">
-          you completed in{" "}
+          you completed in{' '}
           {formatTimeDelta(differenceInSeconds(now, game.time_started))}
         </div>
         <Link
           href={`/statistics/${game.id}`}
-          className={cn(buttonVariants(), "mt-2")}
+          className={cn(buttonVariants(), 'mt-2')}
         >
           View sattistics
           <BarChart className="w-4 h-4 ml-2" />
